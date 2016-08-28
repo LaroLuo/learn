@@ -1,0 +1,67 @@
+function clearbits(colorval){
+    var x = Math.floor(colorval/16);
+    return x;
+}
+function chop2hide(image){
+    for(var pixel of image.values()){
+    pixel.setRed(clearbits(pixel.getRed())*16);
+    pixel.setBlue(clearbits(pixel.getBlue())*16);
+    pixel.setGreen(clearbits(pixel.getGreen())*16);
+    }
+    return image;
+}
+function shift(image){
+    for(var pixel of image.values()){
+        pixel.setRed(Math.floor(pixel.getRed()/16));
+        pixel.setBlue(Math.floor(pixel.getBlue()/16));
+        pixel.setGreen(Math.floor(pixel.getGreen()/16));
+    }
+    return image;
+}
+function crop(image,width,length){
+    var image1 = new SimpleImage(width,length);
+    for(var px of image1.values()){
+        var x = px.getX();
+        var y = px.getY();
+        if(x<=width&&y<=length){
+        var px = image.getPixel(x,y);
+        }
+    }
+    return image1;
+}
+function combine(start,hide){
+    var ans = new SimpleImage(start.getWidth(),start.getHeight());
+    for(var pixel of ans.values()){
+        var x = pixel.getX();
+        var y = pixel.getY();
+        var startpx = start.getPixel(x,y);
+        var hidepx = hide.getPixel(x,y);
+        pixel.setBlue(startpx.getBlue()+hidepx.getBlue());
+        pixel.setRed(startpx.getRed()+hidepx.getRed());
+        pixel.setGreen(startpx.getGreen()+hidepx.getGreen());
+    }
+    return ans;
+}
+var start = new SimpleImage("smalllion.jpg");
+
+var hide = new SimpleImage("duke_blue_devil.png");
+
+start = chop2hide(start);
+
+hide =shift(hide);
+print(hide);
+var wid = start.getWidth();
+    if(wid>hide.getWidth()){
+        wid = hide.getWidth();
+    }
+var hei = start.getHeight();
+    if(hei > hide.getHeight()){
+        hei = hide.getHeight();
+    }
+hide = crop(hide,wid,hei);
+
+start = crop(hide,wid,hei);
+print(start);
+var show = combine(start,hide);
+
+

@@ -1,0 +1,21 @@
+// write your code here
+function dist(pixel,x,y){
+    var dx = pixel.getX()-x;
+    var dy = pixel.getY()-y;
+    var root = Math.sqrt(dx*dx+dy*dy);
+    return root;
+}
+var image = new SimpleImage(256,256);
+for(var px of image.values()){
+    if(dist(px,150,150)<30){
+        px.setRed(255-1.4*dist(px,50,50));
+    }
+    else if(dist(px,40,40)<25){
+        px.setBlue(255-dist(px,34,24));
+    }
+    else if(Math.random()>0.99){
+        px.setGreen(255);
+        px.setBlue(244);
+    }
+}
+print(image);
